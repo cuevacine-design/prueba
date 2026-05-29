@@ -1,293 +1,426 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ANDRES</title>
+  <title>ANDRES CUEVA</title>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+
     body {
-      background: #0a0002;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      font-family: 'Arial Black', Impact, sans-serif;
+      background: radial-gradient(ellipse 130% 100% at 50% 108%,
+        #0d2258 0%, #071438 30%, #030d24 60%, #010510 100%);
+      font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
     }
 
-    /* Grid floor — tinte rojo */
-    .grid {
-      position: fixed;
-      inset: 0;
-      background:
-        linear-gradient(rgba(220,30,30,0.07) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(220,30,30,0.07) 1px, transparent 1px);
-      background-size: 60px 60px;
-      transform: perspective(600px) rotateX(60deg) translateY(40%);
-      transform-origin: bottom center;
-      animation: gridPulse 4s ease-in-out infinite;
+    #skyCanvas {
+      position: fixed; inset: 0;
+      z-index: 1; pointer-events: none;
     }
 
-    @keyframes gridPulse {
-      0%, 100% { opacity: 0.5; }
-      50%       { opacity: 1; }
+    .scene {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 2; user-select: none;
     }
 
-    /* Glow de fondo rojo/blanco */
-    .glow-bg {
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 70% 40% at 50% 55%, rgba(220,20,20,0.18) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 30% at 50% 48%, rgba(255,255,255,0.06) 0%, transparent 60%);
-      animation: breathe 5s ease-in-out infinite;
+    .castle-wrap {
+      flex-shrink: 0;
+      filter: drop-shadow(0 0 18px rgba(60,90,220,0.14))
+              drop-shadow(0 6px 32px rgba(10,20,80,0.5));
     }
 
-    @keyframes breathe {
-      0%, 100% { transform: scale(1);   opacity: 0.7; }
-      50%       { transform: scale(1.08); opacity: 1; }
-    }
+    .castle { display: block; width: clamp(170px, 36vw, 370px); height: auto; }
 
-    /* Nombre */
-    .name-wrapper {
-      position: relative;
-      z-index: 10;
-      text-align: center;
-      user-select: none;
-    }
+    .title-wrap { margin-top: 4px; text-align: center; }
 
-    .name {
-      font-size: clamp(80px, 18vw, 220px);
-      font-weight: 900;
-      letter-spacing: 0.12em;
-      color: #fff;
-      position: relative;
-      display: inline-block;
+    .title {
+      font-size: clamp(20px, 4.8vw, 66px);
+      font-weight: 700;
+      letter-spacing: 0.3em;
       text-transform: uppercase;
+      white-space: nowrap;
+      line-height: 1;
+    }
+
+    .letter {
+      display: inline-block;
+      color: transparent;
+      will-change: color, text-shadow;
+      transition: color 0.16s ease-out, text-shadow 0.16s ease-out;
+    }
+
+    .letter.gap { width: 0.3em; }
+
+    /* orb passes over: white-hot burst */
+    .letter.bright {
+      color: #fffef2;
       text-shadow:
-        0 0 15px  rgba(255, 255, 255, 1),
-        0 0 30px  rgba(255, 60,  60,  0.9),
-        0 0 60px  rgba(220, 20,  20,  0.8),
-        0 0 120px rgba(180, 0,   0,   0.6),
-        0 0 200px rgba(150, 0,   0,   0.3),
-        3px  3px 0 rgba(220, 20, 20, 0.5),
-        6px  6px 0 rgba(180, 10, 10, 0.35),
-        9px  9px 0 rgba(140, 0,  0,  0.2);
-      animation: pulse 3s ease-in-out infinite;
+        0 0 5px #fff,
+        0 0 12px #ffe86a,
+        0 0 26px #ffc100,
+        0 0 55px rgba(255,165,0,0.7),
+        0 0 100px rgba(255,110,0,0.25);
     }
 
-    @keyframes pulse {
-      0%, 100% {
-        text-shadow:
-          0 0 15px  rgba(255, 255, 255, 1),
-          0 0 30px  rgba(255, 60,  60,  0.9),
-          0 0 60px  rgba(220, 20,  20,  0.8),
-          0 0 120px rgba(180, 0,   0,   0.6),
-          0 0 200px rgba(150, 0,   0,   0.3),
-          3px  3px 0 rgba(220, 20, 20, 0.5),
-          6px  6px 0 rgba(180, 10, 10, 0.35),
-          9px  9px 0 rgba(140, 0,  0,  0.2);
-      }
-      50% {
-        text-shadow:
-          0 0 25px  rgba(255, 255, 255, 1),
-          0 0 50px  rgba(255, 80,  80,  1),
-          0 0 100px rgba(220, 30,  30,  0.9),
-          0 0 180px rgba(200, 0,   0,   0.7),
-          0 0 280px rgba(160, 0,   0,   0.4),
-          3px  3px 0 rgba(220, 20, 20, 0.6),
-          6px  6px 0 rgba(180, 10, 10, 0.45),
-          9px  9px 0 rgba(140, 0,  0,  0.3);
-      }
+    /* orb passed: warm stable gold */
+    .letter.settled {
+      color: #edca48;
+      text-shadow:
+        0 0 4px rgba(255,242,160,0.9),
+        0 0 12px rgba(238,192,52,0.65),
+        0 0 28px rgba(205,138,18,0.38),
+        0 0 55px rgba(170,95,8,0.18);
     }
 
-    /* Aberración cromática: rojo izq, blanco der */
-    .name::before,
-    .name::after {
-      content: 'ANDRES';
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .name::before {
-      color: rgba(255, 30, 30, 0.4);
-      transform: translate(-5px, 1px);
-      animation: chromaR 4s ease-in-out infinite;
-      mix-blend-mode: screen;
-    }
-
-    .name::after {
-      color: rgba(255, 220, 220, 0.3);
-      transform: translate(5px, -1px);
-      animation: chromaW 4s ease-in-out infinite;
-      mix-blend-mode: screen;
-    }
-
-    @keyframes chromaR {
-      0%, 100% { transform: translate(-5px,  1px); }
-      50%       { transform: translate(-9px,  3px); }
-    }
-
-    @keyframes chromaW {
-      0%, 100% { transform: translate(5px, -1px); }
-      50%       { transform: translate(9px, -3px); }
-    }
-
-    /* Destellos / chispas */
-    .sparks {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 15;
-    }
-
-    .spark {
-      position: absolute;
-      border-radius: 50%;
-      animation: sparkLife var(--dur) ease-out var(--delay) infinite;
-      opacity: 0;
-    }
-
-    @keyframes sparkLife {
-      0%   { transform: translate(0,0) scale(0);   opacity: 0; }
-      15%  { opacity: 1; }
-      100% { transform: translate(var(--tx), var(--ty)) scale(0.2); opacity: 0; }
-    }
-
-    /* Banda diagonal River */
-    .band {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(
-        135deg,
-        transparent 35%,
-        rgba(220, 20, 20, 0.04) 35%,
-        rgba(220, 20, 20, 0.04) 50%,
-        transparent 50%
-      );
-      pointer-events: none;
-      z-index: 4;
-      animation: bandShimmer 6s ease-in-out infinite;
-    }
-
-    @keyframes bandShimmer {
-      0%, 100% { opacity: 0.5; }
-      50%       { opacity: 1.0; }
-    }
-
-    /* Scan line */
-    .scanline {
-      position: fixed;
-      top: -40%;
-      left: 0; right: 0;
-      height: 40%;
-      background: linear-gradient(
-        to bottom,
-        transparent 0%,
-        rgba(255,255,255,0.025) 50%,
-        transparent 100%
-      );
-      animation: scan 6s linear infinite;
-      pointer-events: none;
-      z-index: 20;
-    }
-
-    @keyframes scan {
-      0%   { top: -40%; }
-      100% { top: 100%; }
-    }
-
-    /* CRT fino */
-    .crt {
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,0.12) 2px,
-        rgba(0,0,0,0.12) 4px
-      );
-      pointer-events: none;
-      z-index: 30;
-    }
-
-    /* Reflejo */
-    .mirror {
-      font-size: clamp(80px, 18vw, 220px);
-      font-weight: 900;
-      letter-spacing: 0.12em;
-      transform: scaleY(-1);
-      display: block;
-      margin-top: -0.08em;
-      background: linear-gradient(to bottom, rgba(255,80,80,0.15), transparent 55%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      filter: blur(1.5px);
-    }
-
-    /* Viñeta */
-    .vignette {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(ellipse at center,
-        transparent 35%,
-        rgba(0,0,0,0.75) 100%);
-      z-index: 5;
-      pointer-events: none;
+    #ovCanvas {
+      position: fixed; inset: 0;
+      z-index: 3; pointer-events: none;
     }
   </style>
 </head>
 <body>
-  <div class="grid"></div>
-  <div class="glow-bg"></div>
-  <div class="band"></div>
-  <div class="vignette"></div>
-  <div class="scanline"></div>
-  <div class="crt"></div>
-  <div class="sparks" id="sparks"></div>
+  <canvas id="skyCanvas"></canvas>
 
-  <div class="name-wrapper">
-    <span class="name">ANDRES</span>
-    <span class="mirror" aria-hidden="true">ANDRES</span>
+  <div class="scene">
+    <!-- Castle silhouette -->
+    <div class="castle-wrap">
+      <svg class="castle" viewBox="0 0 320 252" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stop-color="#0b1e4a"/>
+            <stop offset="100%" stop-color="#050e28"/>
+          </linearGradient>
+          <!-- subtle moon glow at top of main spire -->
+          <radialGradient id="spireGlow" cx="50%" cy="0%" r="60%">
+            <stop offset="0%"   stop-color="#1a3070" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#050e28" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+
+        <!-- ambient glow behind main spire -->
+        <ellipse cx="160" cy="30" rx="55" ry="40" fill="url(#spireGlow)"/>
+
+        <g fill="url(#cg)">
+          <!-- far-left small tower -->
+          <polygon points="11,136 26,104 41,136"/>
+          <rect x="12" y="134" width="28" height="106"/>
+
+          <!-- left-mid tower -->
+          <polygon points="54,98 72,56 90,98"/>
+          <rect x="55" y="96" width="34" height="144"/>
+
+          <!-- left connecting wall -->
+          <rect x="40" y="178" width="16" height="62"/>
+
+          <!-- main center tower body -->
+          <rect x="98" y="66" width="124" height="174"/>
+
+          <!-- main tall spire -->
+          <polygon points="100,68 160,5 220,68"/>
+
+          <!-- left flanking spire -->
+          <polygon points="98,88 117,52 136,88"/>
+
+          <!-- right flanking spire -->
+          <polygon points="184,88 203,52 222,88"/>
+
+          <!-- right connecting wall -->
+          <rect x="264" y="178" width="16" height="62"/>
+
+          <!-- right-mid tower -->
+          <polygon points="230,98 248,56 266,98"/>
+          <rect x="231" y="96" width="34" height="144"/>
+
+          <!-- far-right small tower -->
+          <polygon points="279,136 294,104 309,136"/>
+          <rect x="280" y="134" width="28" height="106"/>
+
+          <!-- ground base -->
+          <rect x="0" y="239" width="320" height="13"/>
+        </g>
+
+        <!-- Battlements on left wall -->
+        <g fill="#0b1e4a">
+          <rect x="40" y="174" width="5" height="8"/>
+          <rect x="48" y="174" width="5" height="8"/>
+        </g>
+        <!-- Battlements on right wall -->
+        <g fill="#0b1e4a">
+          <rect x="267" y="174" width="5" height="8"/>
+          <rect x="275" y="174" width="5" height="8"/>
+        </g>
+
+        <!-- Gate arch opening -->
+        <path d="M 139,240 L 139,213 Q 160,194 181,213 L 181,240 Z" fill="#02070f"/>
+
+        <!-- Round window on main tower -->
+        <circle cx="160" cy="138" r="10" fill="#02070f" opacity="0.82"/>
+
+        <!-- Thin window slits on flanking towers -->
+        <rect x="67"  y="115" width="5" height="14" rx="2" fill="#02070f" opacity="0.6"/>
+        <rect x="248" y="115" width="5" height="14" rx="2" fill="#02070f" opacity="0.6"/>
+      </svg>
+    </div>
+
+    <!-- Title text -->
+    <div class="title-wrap" id="titleWrap">
+      <div class="title" id="titleEl"></div>
+    </div>
   </div>
 
+  <canvas id="ovCanvas"></canvas>
+
   <script>
-    const sparks = document.getElementById('sparks');
     const W = window.innerWidth, H = window.innerHeight;
-    const cx = W / 2, cy = H / 2;
-    const colors = ['#fff','#ff2222','#ff6666','#ffaaaa','#ffffff','#dd0000','#ff4444'];
 
-    for (let i = 0; i < 55; i++) {
-      const el = document.createElement('div');
-      el.className = 'spark';
+    const skyC = document.getElementById('skyCanvas');
+    const skyX = skyC.getContext('2d');
+    skyC.width = W; skyC.height = H;
 
-      const size = Math.random() * 6 + 2;
-      const angle = Math.random() * Math.PI * 2;
-      const dist  = Math.random() * 340 + 60;
-      const tx = Math.cos(angle) * dist;
-      const ty = Math.sin(angle) * dist - Math.random() * 120;
-      const dur  = (Math.random() * 2 + 1.2).toFixed(2) + 's';
-      const delay= (Math.random() * 4).toFixed(2) + 's';
-      const color = colors[Math.floor(Math.random() * colors.length)];
+    const ovC = document.getElementById('ovCanvas');
+    const ovX = ovC.getContext('2d');
+    ovC.width = W; ovC.height = H;
 
-      el.style.cssText = `
-        width:${size}px; height:${size}px;
-        background:${color};
-        box-shadow: 0 0 ${size*2}px ${color};
-        left:${cx + (Math.random()-0.5)*260}px;
-        top:${cy + (Math.random()-0.5)*120}px;
-        --tx:${tx}px; --ty:${ty}px;
-        --dur:${dur}; --delay:${delay};
-      `;
-      sparks.appendChild(el);
+    // ── Background stars ──────────────────────────────────
+    const stars = Array.from({ length: 200 }, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H * 0.80,
+      r: Math.random() * 1.55 + 0.1,
+      a: Math.random() * 0.55 + 0.2,
+      ph: Math.random() * Math.PI * 2,
+      sp: Math.random() * 0.022 + 0.004,
+    }));
+
+    function drawStars(t) {
+      skyX.clearRect(0, 0, W, H);
+      stars.forEach(s => {
+        const g = s.a + Math.sin(s.ph + t * s.sp) * 0.18;
+        skyX.beginPath();
+        skyX.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        skyX.fillStyle = `rgba(252,248,235,${Math.max(0, g)})`;
+        skyX.fill();
+      });
     }
+
+    // ── Text letters ──────────────────────────────────────
+    const titleEl = document.getElementById('titleEl');
+    'ANDRES CUEVA'.split('').forEach(ch => {
+      const s = document.createElement('span');
+      if (ch === ' ') { s.className = 'letter gap'; s.innerHTML = '&nbsp;'; }
+      else            { s.className = 'letter'; s.textContent = ch; }
+      titleEl.appendChild(s);
+    });
+    const letterSpans = [...titleEl.querySelectorAll('.letter:not(.gap)')];
+
+    // ── Bezier helper ─────────────────────────────────────
+    function quad(p0, p1, p2, t) {
+      const m = 1 - t;
+      return { x: m*m*p0.x + 2*m*t*p1.x + t*t*p2.x,
+               y: m*m*p0.y + 2*m*t*p1.y + t*t*p2.y };
+    }
+
+    // ── Particles ─────────────────────────────────────────
+    const parts = [];
+
+    function addParticle(x, y) {
+      const ang = Math.random() * Math.PI * 2;
+      const spd = Math.random() * 1.9 + 0.25;
+      parts.push({
+        x, y,
+        vx: Math.cos(ang) * spd * 0.5,
+        vy: Math.sin(ang) * spd + 0.35,
+        r: Math.random() * 2.8 + 0.7,
+        life: 1,
+        dec: Math.random() * 0.013 + 0.005,
+        gold: Math.random() > 0.36,
+      });
+    }
+
+    function tickParts() {
+      for (let i = parts.length - 1; i >= 0; i--) {
+        const p = parts[i];
+        p.x += p.vx; p.y += p.vy;
+        p.vy += 0.042;
+        p.life -= p.dec;
+        if (p.life <= 0) parts.splice(i, 1);
+      }
+    }
+
+    function drawParts() {
+      parts.forEach(p => {
+        const col = p.gold
+          ? `rgba(255,208,50,${p.life * 0.9})`
+          : `rgba(255,251,218,${p.life * 0.88})`;
+        ovX.beginPath();
+        ovX.arc(p.x, p.y, p.r * p.life, 0, Math.PI * 2);
+        ovX.fillStyle = col;
+        ovX.fill();
+
+        const g = ovX.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4.5);
+        g.addColorStop(0, p.gold
+          ? `rgba(255,188,28,${p.life * 0.38})`
+          : `rgba(255,252,200,${p.life * 0.3})`);
+        g.addColorStop(1, 'rgba(0,0,0,0)');
+        ovX.beginPath();
+        ovX.arc(p.x, p.y, p.r * 4.5, 0, Math.PI * 2);
+        ovX.fillStyle = g;
+        ovX.fill();
+      });
+    }
+
+    // ── Shooting star ─────────────────────────────────────
+    function drawStar(x, y, alpha) {
+      if (alpha <= 0) return;
+
+      // outer aura
+      const og = ovX.createRadialGradient(x, y, 0, x, y, 32);
+      og.addColorStop(0,   `rgba(255,246,195,${alpha * 0.58})`);
+      og.addColorStop(0.3, `rgba(255,218,75,${alpha * 0.34})`);
+      og.addColorStop(1,   'rgba(255,170,15,0)');
+      ovX.beginPath(); ovX.arc(x, y, 32, 0, Math.PI * 2);
+      ovX.fillStyle = og; ovX.fill();
+
+      // white core
+      const cg = ovX.createRadialGradient(x, y, 0, x, y, 5.5);
+      cg.addColorStop(0, `rgba(255,255,255,${alpha})`);
+      cg.addColorStop(1, `rgba(255,225,90,${alpha * 0.3})`);
+      ovX.beginPath(); ovX.arc(x, y, 5.5, 0, Math.PI * 2);
+      ovX.fillStyle = cg; ovX.fill();
+
+      // 4-ray cross + 4-ray diagonal
+      ovX.save(); ovX.translate(x, y);
+      [[24, 1.3], [15, 0.85]].forEach(([len, w], si) => {
+        if (si === 1) ovX.rotate(Math.PI / 4);
+        for (let i = 0; i < 4; i++) {
+          ovX.save(); ovX.rotate(i * Math.PI / 2);
+          const rg = ovX.createLinearGradient(0, 0, len, 0);
+          rg.addColorStop(0,   `rgba(255,255,255,${alpha * (si ? 0.65 : 0.95)})`);
+          rg.addColorStop(0.4, `rgba(255,238,140,${alpha * 0.55})`);
+          rg.addColorStop(1,   'rgba(255,190,40,0)');
+          ovX.fillStyle = rg;
+          ovX.fillRect(0, -w, len, w * 2);
+          ovX.restore();
+        }
+      });
+      ovX.restore();
+    }
+
+    // ── Text orb (sweeping light) ─────────────────────────
+    let orbOn = false, orbProg = 0;
+    let orbX0 = 0, orbX1 = 0, orbCY = 0;
+    const ORB_DUR = 1380;
+
+    function initOrb() {
+      const wr = document.getElementById('titleWrap').getBoundingClientRect();
+      orbX0  = wr.left  - 32;
+      orbX1  = wr.right + 32;
+      orbCY  = wr.top   + wr.height / 2;
+      orbOn  = true;
+      orbProg = 0;
+    }
+
+    function tickOrb(dt) {
+      if (!orbOn) return;
+      orbProg = Math.min(1, orbProg + dt / ORB_DUR);
+      const ox = orbX0 + (orbX1 - orbX0) * orbProg;
+
+      // reveal letters
+      letterSpans.forEach(span => {
+        if (span.classList.contains('bright') || span.classList.contains('settled')) return;
+        const r = span.getBoundingClientRect();
+        if (r.left + r.width * 0.38 <= ox) {
+          span.classList.add('bright');
+          setTimeout(() => {
+            span.classList.remove('bright');
+            span.classList.add('settled');
+          }, 370);
+        }
+      });
+
+      // draw orb glow on canvas
+      if (orbProg < 1) {
+        const r1 = 58, r2 = 13;
+
+        const og = ovX.createRadialGradient(ox, orbCY, 0, ox, orbCY, r1);
+        og.addColorStop(0,    'rgba(255,255,230,0.50)');
+        og.addColorStop(0.22, 'rgba(255,228,78,0.34)');
+        og.addColorStop(0.55, 'rgba(255,188,28,0.14)');
+        og.addColorStop(1,    'rgba(255,140,0,0)');
+        ovX.beginPath(); ovX.arc(ox, orbCY, r1, 0, Math.PI * 2);
+        ovX.fillStyle = og; ovX.fill();
+
+        const cg = ovX.createRadialGradient(ox, orbCY, 0, ox, orbCY, r2);
+        cg.addColorStop(0, 'rgba(255,255,255,0.92)');
+        cg.addColorStop(0.5,'rgba(255,245,175,0.58)');
+        cg.addColorStop(1,  'rgba(255,210,55,0)');
+        ovX.beginPath(); ovX.arc(ox, orbCY, r2, 0, Math.PI * 2);
+        ovX.fillStyle = cg; ovX.fill();
+      } else {
+        orbOn = false;
+      }
+    }
+
+    // ── Main animation loop ───────────────────────────────
+    const STAR_DELAY = 700;   // ms before star launches
+    const STAR_DUR   = 2500;  // ms for full arc
+    const TEXT_TRIG  = 0.44;  // fire text reveal at 44% of arc
+
+    // Arc path: lower-left → above castle → lower-right
+    const P0 = { x: W * 0.08, y: H * 0.71 };
+    const P1 = { x: W * 0.50, y: H * 0.05 };
+    const P2 = { x: W * 0.92, y: H * 0.71 };
+
+    let t0 = null, tPrev = null, textFired = false;
+
+    function frame(ts) {
+      if (!t0) t0 = ts;
+      const elapsed = ts - t0;
+      const dt = tPrev ? ts - tPrev : 16;
+      tPrev = ts;
+
+      ovX.clearRect(0, 0, W, H);
+      drawStars(elapsed);
+
+      const starEl = elapsed - STAR_DELAY;
+      if (starEl > 0) {
+        const st = Math.min(1, starEl / STAR_DUR);
+
+        if (st < 1) {
+          const pos = quad(P0, P1, P2, st);
+
+          // spawn particles
+          if (Math.random() < 0.74) addParticle(pos.x, pos.y);
+          if (Math.random() < 0.40) addParticle(
+            pos.x + (Math.random() - 0.5) * 10,
+            pos.y + (Math.random() - 0.5) * 10
+          );
+
+          // edge fade
+          let alpha = 1;
+          if (st < 0.055) alpha = st / 0.055;
+          if (st > 0.93)  alpha = (1 - st) / 0.07;
+
+          drawStar(pos.x, pos.y, alpha);
+
+          if (st >= TEXT_TRIG && !textFired) {
+            textFired = true;
+            initOrb();
+          }
+        }
+      }
+
+      tickParts();
+      drawParts();
+      tickOrb(dt);
+
+      requestAnimationFrame(frame);
+    }
+
+    requestAnimationFrame(frame);
   </script>
 </body>
 </html>
