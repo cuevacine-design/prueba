@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ANDRES</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #000;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-family: 'Arial Black', Impact, sans-serif;
+    }
+
+    /* Liminal grid floor */
+    .grid {
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      transform: perspective(600px) rotateX(60deg) translateY(40%);
+      transform-origin: bottom center;
+      animation: gridPulse 4s ease-in-out infinite;
+    }
+
+    @keyframes gridPulse {
+      0%, 100% { opacity: 0.4; }
+      50%       { opacity: 1; }
+    }
+
+    /* Ambient glow layers */
+    .glow-bg {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% 60%,
+        rgba(0, 200, 255, 0.08) 0%,
+        transparent 70%);
+      animation: breathe 6s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(1);   opacity: 0.6; }
+      50%       { transform: scale(1.1); opacity: 1; }
+    }
+
+    /* Main name */
+    .name-wrapper {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      user-select: none;
+    }
+
+    .name {
+      font-size: clamp(80px, 18vw, 220px);
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      color: #fff;
+      position: relative;
+      display: inline-block;
+      text-transform: uppercase;
+
+      /* Core optical effect: layered text-shadow depth */
+      text-shadow:
+        0 0 20px  rgba(0, 220, 255, 0.9),
+        0 0 40px  rgba(0, 200, 255, 0.7),
+        0 0 80px  rgba(0, 180, 255, 0.5),
+        0 0 160px rgba(0, 150, 255, 0.3),
+        /* Hard edge depth layers */
+        2px  2px 0 rgba(0,220,255,0.4),
+        4px  4px 0 rgba(0,200,255,0.3),
+        6px  6px 0 rgba(0,180,255,0.2),
+        8px  8px 0 rgba(0,150,255,0.15);
+
+      animation: flicker 8s ease-in-out infinite;
+    }
+
+    @keyframes flicker {
+      0%,  94%, 96%, 98%, 100% {
+        text-shadow:
+          0 0 20px  rgba(0, 220, 255, 0.9),
+          0 0 40px  rgba(0, 200, 255, 0.7),
+          0 0 80px  rgba(0, 180, 255, 0.5),
+          0 0 160px rgba(0, 150, 255, 0.3),
+          2px  2px 0 rgba(0,220,255,0.4),
+          4px  4px 0 rgba(0,200,255,0.3),
+          6px  6px 0 rgba(0,180,255,0.2),
+          8px  8px 0 rgba(0,150,255,0.15);
+        opacity: 1;
+      }
+      95% { opacity: 0.85; text-shadow: 0 0 10px rgba(0,220,255,0.5); }
+      97% { opacity: 0.6;  text-shadow: none; }
+    }
+
+    /* Chromatic aberration ghost layers */
+    .name::before,
+    .name::after {
+      content: 'ANDRES';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .name::before {
+      color: rgba(255, 0, 80, 0.35);
+      transform: translate(-4px, 0px);
+      animation: chromaR 5s ease-in-out infinite;
+      mix-blend-mode: screen;
+    }
+
+    .name::after {
+      color: rgba(0, 255, 180, 0.35);
+      transform: translate(4px, 0px);
+      animation: chromaG 5s ease-in-out infinite;
+      mix-blend-mode: screen;
+    }
+
+    @keyframes chromaR {
+      0%, 100% { transform: translate(-4px, 0); }
+      50%       { transform: translate(-8px, 2px); }
+    }
+
+    @keyframes chromaG {
+      0%, 100% { transform: translate(4px, 0); }
+      50%       { transform: translate(9px, -2px); }
+    }
+
+    /* Scan line sweep */
+    .scanline {
+      position: fixed;
+      top: -100%;
+      left: 0;
+      right: 0;
+      height: 40%;
+      background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(255,255,255,0.03) 50%,
+        transparent 100%
+      );
+      animation: scan 7s linear infinite;
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    @keyframes scan {
+      0%   { top: -40%; }
+      100% { top: 100%; }
+    }
+
+    /* Fine CRT lines */
+    .crt {
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.15) 2px,
+        rgba(0,0,0,0.15) 4px
+      );
+      pointer-events: none;
+      z-index: 30;
+    }
+
+    /* Mirror/reflection */
+    .mirror {
+      font-size: clamp(80px, 18vw, 220px);
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.08);
+      transform: scaleY(-1);
+      display: block;
+      margin-top: -0.1em;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.12), transparent 60%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: blur(1px);
+    }
+
+    /* Vignette */
+    .vignette {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center,
+        transparent 40%,
+        rgba(0,0,0,0.7) 100%);
+      z-index: 5;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="grid"></div>
+  <div class="glow-bg"></div>
+  <div class="vignette"></div>
+  <div class="scanline"></div>
+  <div class="crt"></div>
+
+  <div class="name-wrapper">
+    <span class="name">ANDRES</span>
+    <span class="mirror" aria-hidden="true">ANDRES</span>
+  </div>
+</body>
+</html>
