@@ -8,7 +8,7 @@
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      background: #000;
+      background: #0a0002;
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -17,13 +17,13 @@
       font-family: 'Arial Black', Impact, sans-serif;
     }
 
-    /* Liminal grid floor */
+    /* Grid floor — tinte rojo */
     .grid {
       position: fixed;
       inset: 0;
       background:
-        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+        linear-gradient(rgba(220,30,30,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(220,30,30,0.07) 1px, transparent 1px);
       background-size: 60px 60px;
       transform: perspective(600px) rotateX(60deg) translateY(40%);
       transform-origin: bottom center;
@@ -31,26 +31,26 @@
     }
 
     @keyframes gridPulse {
-      0%, 100% { opacity: 0.4; }
+      0%, 100% { opacity: 0.5; }
       50%       { opacity: 1; }
     }
 
-    /* Ambient glow layers */
+    /* Glow de fondo rojo/blanco */
     .glow-bg {
       position: fixed;
       inset: 0;
-      background: radial-gradient(ellipse 80% 50% at 50% 60%,
-        rgba(0, 200, 255, 0.08) 0%,
-        transparent 70%);
-      animation: breathe 6s ease-in-out infinite;
+      background:
+        radial-gradient(ellipse 70% 40% at 50% 55%, rgba(220,20,20,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 50% 48%, rgba(255,255,255,0.06) 0%, transparent 60%);
+      animation: breathe 5s ease-in-out infinite;
     }
 
     @keyframes breathe {
-      0%, 100% { transform: scale(1);   opacity: 0.6; }
-      50%       { transform: scale(1.1); opacity: 1; }
+      0%, 100% { transform: scale(1);   opacity: 0.7; }
+      50%       { transform: scale(1.08); opacity: 1; }
     }
 
-    /* Main name */
+    /* Nombre */
     .name-wrapper {
       position: relative;
       z-index: 10;
@@ -66,40 +66,44 @@
       position: relative;
       display: inline-block;
       text-transform: uppercase;
-
-      /* Core optical effect: layered text-shadow depth */
       text-shadow:
-        0 0 20px  rgba(0, 220, 255, 0.9),
-        0 0 40px  rgba(0, 200, 255, 0.7),
-        0 0 80px  rgba(0, 180, 255, 0.5),
-        0 0 160px rgba(0, 150, 255, 0.3),
-        /* Hard edge depth layers */
-        2px  2px 0 rgba(0,220,255,0.4),
-        4px  4px 0 rgba(0,200,255,0.3),
-        6px  6px 0 rgba(0,180,255,0.2),
-        8px  8px 0 rgba(0,150,255,0.15);
-
-      animation: flicker 8s ease-in-out infinite;
+        0 0 15px  rgba(255, 255, 255, 1),
+        0 0 30px  rgba(255, 60,  60,  0.9),
+        0 0 60px  rgba(220, 20,  20,  0.8),
+        0 0 120px rgba(180, 0,   0,   0.6),
+        0 0 200px rgba(150, 0,   0,   0.3),
+        3px  3px 0 rgba(220, 20, 20, 0.5),
+        6px  6px 0 rgba(180, 10, 10, 0.35),
+        9px  9px 0 rgba(140, 0,  0,  0.2);
+      animation: pulse 3s ease-in-out infinite;
     }
 
-    @keyframes flicker {
-      0%,  94%, 96%, 98%, 100% {
+    @keyframes pulse {
+      0%, 100% {
         text-shadow:
-          0 0 20px  rgba(0, 220, 255, 0.9),
-          0 0 40px  rgba(0, 200, 255, 0.7),
-          0 0 80px  rgba(0, 180, 255, 0.5),
-          0 0 160px rgba(0, 150, 255, 0.3),
-          2px  2px 0 rgba(0,220,255,0.4),
-          4px  4px 0 rgba(0,200,255,0.3),
-          6px  6px 0 rgba(0,180,255,0.2),
-          8px  8px 0 rgba(0,150,255,0.15);
-        opacity: 1;
+          0 0 15px  rgba(255, 255, 255, 1),
+          0 0 30px  rgba(255, 60,  60,  0.9),
+          0 0 60px  rgba(220, 20,  20,  0.8),
+          0 0 120px rgba(180, 0,   0,   0.6),
+          0 0 200px rgba(150, 0,   0,   0.3),
+          3px  3px 0 rgba(220, 20, 20, 0.5),
+          6px  6px 0 rgba(180, 10, 10, 0.35),
+          9px  9px 0 rgba(140, 0,  0,  0.2);
       }
-      95% { opacity: 0.85; text-shadow: 0 0 10px rgba(0,220,255,0.5); }
-      97% { opacity: 0.6;  text-shadow: none; }
+      50% {
+        text-shadow:
+          0 0 25px  rgba(255, 255, 255, 1),
+          0 0 50px  rgba(255, 80,  80,  1),
+          0 0 100px rgba(220, 30,  30,  0.9),
+          0 0 180px rgba(200, 0,   0,   0.7),
+          0 0 280px rgba(160, 0,   0,   0.4),
+          3px  3px 0 rgba(220, 20, 20, 0.6),
+          6px  6px 0 rgba(180, 10, 10, 0.45),
+          9px  9px 0 rgba(140, 0,  0,  0.3);
+      }
     }
 
-    /* Chromatic aberration ghost layers */
+    /* Aberración cromática: rojo izq, blanco der */
     .name::before,
     .name::after {
       content: 'ANDRES';
@@ -111,43 +115,84 @@
     }
 
     .name::before {
-      color: rgba(255, 0, 80, 0.35);
-      transform: translate(-4px, 0px);
-      animation: chromaR 5s ease-in-out infinite;
+      color: rgba(255, 30, 30, 0.4);
+      transform: translate(-5px, 1px);
+      animation: chromaR 4s ease-in-out infinite;
       mix-blend-mode: screen;
     }
 
     .name::after {
-      color: rgba(0, 255, 180, 0.35);
-      transform: translate(4px, 0px);
-      animation: chromaG 5s ease-in-out infinite;
+      color: rgba(255, 220, 220, 0.3);
+      transform: translate(5px, -1px);
+      animation: chromaW 4s ease-in-out infinite;
       mix-blend-mode: screen;
     }
 
     @keyframes chromaR {
-      0%, 100% { transform: translate(-4px, 0); }
-      50%       { transform: translate(-8px, 2px); }
+      0%, 100% { transform: translate(-5px,  1px); }
+      50%       { transform: translate(-9px,  3px); }
     }
 
-    @keyframes chromaG {
-      0%, 100% { transform: translate(4px, 0); }
-      50%       { transform: translate(9px, -2px); }
+    @keyframes chromaW {
+      0%, 100% { transform: translate(5px, -1px); }
+      50%       { transform: translate(9px, -3px); }
     }
 
-    /* Scan line sweep */
+    /* Destellos / chispas */
+    .sparks {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 15;
+    }
+
+    .spark {
+      position: absolute;
+      border-radius: 50%;
+      animation: sparkLife var(--dur) ease-out var(--delay) infinite;
+      opacity: 0;
+    }
+
+    @keyframes sparkLife {
+      0%   { transform: translate(0,0) scale(0);   opacity: 0; }
+      15%  { opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) scale(0.2); opacity: 0; }
+    }
+
+    /* Banda diagonal River */
+    .band {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(
+        135deg,
+        transparent 35%,
+        rgba(220, 20, 20, 0.04) 35%,
+        rgba(220, 20, 20, 0.04) 50%,
+        transparent 50%
+      );
+      pointer-events: none;
+      z-index: 4;
+      animation: bandShimmer 6s ease-in-out infinite;
+    }
+
+    @keyframes bandShimmer {
+      0%, 100% { opacity: 0.5; }
+      50%       { opacity: 1.0; }
+    }
+
+    /* Scan line */
     .scanline {
       position: fixed;
-      top: -100%;
-      left: 0;
-      right: 0;
+      top: -40%;
+      left: 0; right: 0;
       height: 40%;
       background: linear-gradient(
         to bottom,
         transparent 0%,
-        rgba(255,255,255,0.03) 50%,
+        rgba(255,255,255,0.025) 50%,
         transparent 100%
       );
-      animation: scan 7s linear infinite;
+      animation: scan 6s linear infinite;
       pointer-events: none;
       z-index: 20;
     }
@@ -157,7 +202,7 @@
       100% { top: 100%; }
     }
 
-    /* Fine CRT lines */
+    /* CRT fino */
     .crt {
       position: fixed;
       inset: 0;
@@ -165,36 +210,35 @@
         0deg,
         transparent,
         transparent 2px,
-        rgba(0,0,0,0.15) 2px,
-        rgba(0,0,0,0.15) 4px
+        rgba(0,0,0,0.12) 2px,
+        rgba(0,0,0,0.12) 4px
       );
       pointer-events: none;
       z-index: 30;
     }
 
-    /* Mirror/reflection */
+    /* Reflejo */
     .mirror {
       font-size: clamp(80px, 18vw, 220px);
       font-weight: 900;
       letter-spacing: 0.12em;
-      color: rgba(255,255,255,0.08);
       transform: scaleY(-1);
       display: block;
-      margin-top: -0.1em;
-      background: linear-gradient(to bottom, rgba(255,255,255,0.12), transparent 60%);
+      margin-top: -0.08em;
+      background: linear-gradient(to bottom, rgba(255,80,80,0.15), transparent 55%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      filter: blur(1px);
+      filter: blur(1.5px);
     }
 
-    /* Vignette */
+    /* Viñeta */
     .vignette {
       position: fixed;
       inset: 0;
       background: radial-gradient(ellipse at center,
-        transparent 40%,
-        rgba(0,0,0,0.7) 100%);
+        transparent 35%,
+        rgba(0,0,0,0.75) 100%);
       z-index: 5;
       pointer-events: none;
     }
@@ -203,13 +247,47 @@
 <body>
   <div class="grid"></div>
   <div class="glow-bg"></div>
+  <div class="band"></div>
   <div class="vignette"></div>
   <div class="scanline"></div>
   <div class="crt"></div>
+  <div class="sparks" id="sparks"></div>
 
   <div class="name-wrapper">
     <span class="name">ANDRES</span>
     <span class="mirror" aria-hidden="true">ANDRES</span>
   </div>
+
+  <script>
+    const sparks = document.getElementById('sparks');
+    const W = window.innerWidth, H = window.innerHeight;
+    const cx = W / 2, cy = H / 2;
+    const colors = ['#fff','#ff2222','#ff6666','#ffaaaa','#ffffff','#dd0000','#ff4444'];
+
+    for (let i = 0; i < 55; i++) {
+      const el = document.createElement('div');
+      el.className = 'spark';
+
+      const size = Math.random() * 6 + 2;
+      const angle = Math.random() * Math.PI * 2;
+      const dist  = Math.random() * 340 + 60;
+      const tx = Math.cos(angle) * dist;
+      const ty = Math.sin(angle) * dist - Math.random() * 120;
+      const dur  = (Math.random() * 2 + 1.2).toFixed(2) + 's';
+      const delay= (Math.random() * 4).toFixed(2) + 's';
+      const color = colors[Math.floor(Math.random() * colors.length)];
+
+      el.style.cssText = `
+        width:${size}px; height:${size}px;
+        background:${color};
+        box-shadow: 0 0 ${size*2}px ${color};
+        left:${cx + (Math.random()-0.5)*260}px;
+        top:${cy + (Math.random()-0.5)*120}px;
+        --tx:${tx}px; --ty:${ty}px;
+        --dur:${dur}; --delay:${delay};
+      `;
+      sparks.appendChild(el);
+    }
+  </script>
 </body>
 </html>
